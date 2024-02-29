@@ -1,4 +1,5 @@
 from SocialNetwork.Post import TextPost
+from SocialNetwork.Post import PostFactory
 from SocialNetwork.SocialNetwork import SocialNetwork
 import Post
 
@@ -40,7 +41,7 @@ class User(Observer):
     def post(self, content):
         post = TextPost(content, self)
         self.posts.append(post)
-        Post.PostFactory.publish_post(post)
+        publish_post()
         self.notify_followers("User {} posted: {}".format(self.username, content))
 
     def notify_followers(self, message):
