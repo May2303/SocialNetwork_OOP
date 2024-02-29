@@ -1,12 +1,10 @@
 import SocialNetwork
 import User
-import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 
 # Factory Pattern
 class PostFactory:
     @staticmethod
-    def publish_post(post_type, *args, **kwargs):
+    def posting(post_type, *args, **kwargs):
         if post_type == "text":
             return TextPost(*args, **kwargs)
         elif post_type == "image":
@@ -24,12 +22,13 @@ class Post:
         self.likes = set()
         self.comments = []
 
-    def like(self, user):
-        self.likes.add(user)
-        user.update("Liked your post: {}".format(self.content))
+    def like(self, other_user: User):
+        if other_user in SocialNetwork.SocialNetwork.SocialNetwork.users:
+           if(other_user is not self.user):
+             user.update("{} liked your post".format(self.content))
 
-    def comment(self, user, text):
-        comment = "{}: {}".format(user.username, text)
+    def comment(self, other_user: User, text):
+        comment = "{}: {}".format(other_user.username, text)
         self.comments.append(comment)
         user.update("Commented on your post: {}".format(self.content))
 
@@ -58,17 +57,24 @@ class SalePost(Post):
         self.sold = False
 
     def discount(self, percentage, password: str):
-        if not self.sold:
+        if self.sold is False:
            if password == self.user.password:
               self.price *= (100 - percentage) / 100
+              print("Discount on {} product! the new price is: {}".format(self.user, self.price))
            else:
               print("this is not your post!!")
             
     def sold(self, password: str):
-        self.sold = True
+        if password is self.user.password: 
+          self.sold = True
         
     def print_sold(self):
         print("this item sold by {}".format(self.user))
 
     def display(self):
-        print("Sale Post: {} - ₪{} - Location: {} - available: {}".format(self.description, self.price, self.location, self.available))
+        if self.sold is True:
+            isSold= "Sold!"
+        else:
+            isSold= "For sale!"
+            
+        print("{} {}, price: {}, pickup from: {}".format(isSold, self.content, self.price, self.location))
