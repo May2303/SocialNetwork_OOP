@@ -5,22 +5,36 @@ import User
 import Post
 
 
-class SocialNetwork():
+class SocialNetwork:
     _current_network = None
     net_log = User.User.log
-    users = [" "]
 
-    def get_instance(self):
-        if SocialNetwork._current_network is None:
-            SocialNetwork("Defult Name")
-            return self._current_network
+    #  users = [" "]
 
-    def __init__(self, _current_network):
-        if SocialNetwork._current_network is not None:
-            raise Exception("singleton can do this init only once!")
-        else:
-            SocialNetwork._current_network = self
+    def __new__(cls, name):
+        if cls._current_network is None:
+            print("The social network " + name + " was created!")
+            cls.instance = super().__new__(cls)
+            cls._current_network.name = name
+            cls._current_network.users = []
+            return cls._current_network
 
+    def _str_(self):
+        temp = self.name + " social network:\n"
+        for user in self.users:
+            temp += user._str_() + "\n"
+        return temp
+
+    #   def get_instance(self):
+    #      if SocialNetwork._current_network is None:
+    #         SocialNetwork("Defult Name")
+    #        return self._current_network
+
+    #   def __init__(self, _current_network: str):
+    #      if SocialNetwork._current_network is not None:
+    #         raise Exception("singleton can do this init only once!")
+    #    else:
+    #       SocialNetwork._current_network = self
 
     def log_in(self, name, password):
         if name in self.users:
