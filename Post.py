@@ -1,6 +1,12 @@
+import SocialNetwork
+import User
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
+
 # Factory Pattern
 class PostFactory:
-    def publish_post(self, post_type, *args, **kwargs):
+    @staticmethod
+    def publish_post(post_type, *args, **kwargs):
         if post_type == "text":
             return TextPost(*args, **kwargs)
         elif post_type == "image":
@@ -38,7 +44,9 @@ class ImagePost(Post):
         self.image_path = image_path
 
     def display(self):
-        print("Displaying image from {}".format(self.image_path))
+        img = mpimg.imread(self.image_path)
+        imgplot = plt.imshow(img)
+        plt.show()
 
 
 class SalePost(Post):
@@ -49,11 +57,18 @@ class SalePost(Post):
         self.location = location
         self.sold = False
 
-    def discount(self, percentage):
-        self.price *= (100 - percentage) / 100
-
-    def sold(self):
+    def discount(self, percentage, password: str):
+        if not self.sold:
+           if password == self.user.password:
+              self.price *= (100 - percentage) / 100
+           else:
+              print("this is not your post!!")
+            
+    def sold(self, password: str):
         self.sold = True
+        
+    def print_sold(self):
+        print("this item sold by {}".format(self.user))
 
     def display(self):
-        print("Sale Post: {} - ${} - Location: {}".format(self.description, self.price, self.location))
+        print("Sale Post: {} - ₪{} - Location: {} - available: {}".format(self.description, self.price, self.location, self.available))
